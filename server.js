@@ -13,7 +13,17 @@ const app = express();
 
 app.use(helmet());
 
-app.get('/secret', (req, res) => {
+function checkLoggedIn (req, res, next) {
+    const isLoggedIn = true; //TODO
+    if (!isLoggedIn) {
+        return res.status(401).json({
+            error: 'you must log in',
+        });
+    } 
+    next();
+}
+
+app.get('/secret', checkLoggedIn, (req, res) => {
     return res.send('your personal secrete value is 42')
 });
 
