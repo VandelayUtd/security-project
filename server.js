@@ -35,12 +35,12 @@ passport.use(new Strategy(AUTH_OPTIONS, verifyCallback))
 
 //save session to cookie
 passport.serializeUser((user, done) => {
-    done(null, user);
-})
+    done(null, user.id);
+});
 
 //read the session from the cookie
-passport.deserializeUser((obj, done) => {
-    done(null, obj);
+passport.deserializeUser((id, done) => {
+    done(null, id);
 })
 
 const app = express();
@@ -57,7 +57,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 function checkLoggedIn (req, res, next) {
-    const isLoggedIn = true; //TODO
+    console.log(req.user)
+    const isLoggedIn = req.isAuthenticated() && req.user; 
     if (!isLoggedIn) {
         return res.status(401).json({
             error: 'you must log in',
